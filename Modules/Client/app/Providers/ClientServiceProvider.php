@@ -22,6 +22,8 @@ class ClientServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        // $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'client');
+
     }
 
     /**
