@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PermissionCategory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -25,13 +26,6 @@ class RoleController extends Controller implements HasMiddleware
             
         ];
     }
-        // Apply permission middleware to specific methods
-
-        // $this->middleware('permission:view role', ['only' => ['index']]);
-        // $this->middleware('permission:create role', ['only' => ['create','store','addPermissionToRole','givePermissionToRole']]);
-        // $this->middleware('permission:update role', ['only' => ['update','edit']]);
-        // $this->middleware('permission:delete role', ['only' => ['destroy']]);
-    // }
     public function index()
     {
         $roles = Role::get();
@@ -93,6 +87,7 @@ class RoleController extends Controller implements HasMiddleware
 
     public function addPermissionToRole($roleId)
     {
+        $categories = PermissionCategory::get();
         $permissions = Permission::get();
         $role = Role::findOrFail($roleId);
         $rolePermissions = DB::table('role_has_permissions')->where('role_has_permissions.role_id', $role->id)  
@@ -102,7 +97,8 @@ class RoleController extends Controller implements HasMiddleware
         return view('role-permission.role.add-permissions', [
             'role' => $role,
             'permissions' => $permissions,
-            'rolePermissions' => $rolePermissions
+            'rolePermissions' => $rolePermissions,
+            'categories' => $categories
         ]);
     }
 

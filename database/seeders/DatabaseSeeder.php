@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([PermissionSeeder::class]); // Uncomment if you want to seed users manually.
+        $this->call([UserSeeder::class]); 
     }
 }

@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\PermissionCategory;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionSeeder extends Seeder
 {
@@ -13,49 +14,53 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-      $permissions = [
-        'create user',
-        'update user',
-        'edit users',
-        'delete user',
-        'view user',
-        'view role',
-        'update role',
-        'edit role',
-        'delete role',
-        'create role',
-        'view permission',
-        'Add / Edit Role Permission',
+        // Define categories and their permissions
+        $categories = [
+            'User Management' => [
+                'create user',
+                'update user',
+                'edit users',
+                'delete user',
+                'view user',
+            ],
+            'Role Management' => [
+                'view role',
+                'update role',
+                'edit role',
+                'delete role',
+                'create role',
+                'Add / Edit Role Permission',
+            ],
+            'Permission Management' => [
+                'view permission',
+            ],
+            'Client Management' => [
+                'create clients',
+                'view clients',
+            ],
+        ];
 
-        
-      ];
+        foreach ($categories as $categoryName => $permissions) {
+            // Create or get the category
+            $category = PermissionCategory::firstOrCreate(['name' => $categoryName]);
 
-      foreach ($permissions as $permission) {
-        Permission::firstOrCreate(['name' => $permission]);
-      }
+            foreach ($permissions as $permissionName) {
+                // Create permission with a category
+                Permission::firstOrCreate([
+                    'name' => $permissionName,
+                    'permission_category_id' => $category->id, // Correct column name for the foreign key
+                ]);
+            }
+        }
 
-      $roles = [
-        'Super Admin' => [
-            'create user',
-            'update user',
-            'edit users',
-            'delete user',
-            'view user',
-            'view role',
-            'update role',
-            'edit role',
-            'delete role',
-            'create role',
-            'view permission',
-            'Add / Edit Role Permission',
+        // Role Permissions
+        $roles = [
+            'Super Admin' => array_merge(...array_values($categories)),
+        ];
 
-        ]
-      ];
-
-      foreach ($roles as $roleName => $permissions) {
-        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => $roleName]);
-        $role->syncPermissions($permissions);
-      }
-
+        foreach ($roles as $roleName => $rolePermissions) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role->syncPermissions($rolePermissions);
+        }
     }
 }
