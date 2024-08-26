@@ -1,80 +1,129 @@
 <x-app-layout>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                @if ($errors->any())
-                <ul class="alert alert-warning">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                @endif
+    <x-slot name="header">
+        <h1 class="text-2xl font-bold">Edit User</h1>
+    </x-slot>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Edit Client
-                            <a href="{{ route('clients.index') }}" class="btn btn-danger float-end">Back</a>
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('clients.update', $client->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <form action="{{ route('clients.update', $client->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-                            <div class="mb-3">
-                                <label for="">Name</label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name', $client->name) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Facility Level</label>
-                                <input type="text" name="facility_level" class="form-control" value="{{ old('facility_level', $client->facility_level) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Location</label>
-                                <input type="text" name="location" class="form-control" value="{{ old('location', $client->location) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Contact Person Name</label>
-                                <input type="text" name="contact_person_name" class="form-control" value="{{ old('contact_person_name', $client->contact_person_name) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Contact Person Phone</label>
-                                <input type="text" name="contact_person_phone" class="form-control" value="{{ old('contact_person_phone', $client->contact_person_phone) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Email for Invoices</label>
-                                <input type="email" name="email_for_invoices" class="form-control" value="{{ old('email_for_invoices', $client->email_for_invoices) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Billing Cycle</label>
-                                <input type="text" name="billing_cycle" class="form-control" value="{{ old('billing_cycle', $client->billing_cycle) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Streamline Engineer Name</label>
-                                <input type="text" name="streamline_engineer_name" class="form-control" value="{{ old('streamline_engineer_name', $client->streamline_engineer_name) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Streamline Engineer Phone</label>
-                                <input type="text" name="streamline_engineer_phone" class="form-control" value="{{ old('streamline_engineer_phone', $client->streamline_engineer_phone) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Streamline Engineer Email</label>
-                                <input type="email" name="streamline_engineer_email" class="form-control" value="{{ old('streamline_engineer_email', $client->streamline_engineer_email) }}" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="">Status</label>
-                                <select name="status" class="form-control">
-                                    <option value="Active" {{ $client->status == 'Active' ? 'selected' : '' }}>Active</option>
-                                    <option value="Inactive" {{ $client->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Name</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $client->name) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('name')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
             </div>
-        </div>
+
+            <div class="mb-4">
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Location</label>
+                <input type="text" id="location" name="location" value="{{ old('location', $client->name) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('location')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="facility_level" class="block text-sm font-medium text-gray-700 dark:text-gray-800">Facility Level</label>
+                <select id="facility_level" name="facility_level" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                    <option value="" disabled selected>Select a facility level</option>
+                    @foreach(['HCI', 'HCII', 'HCIII', 'HCIV', 'Clinic', 'Hospital', 'Referral Hospital'] as $level) 
+                        <option value="{{ $level }}" {{ old('facility_level') == $level ? 'selected' : '' }}>
+                            {{ ucfirst($level) }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('facility_level')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="email_for_invoices" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email for Invoice</label>
+                <input type="email" id="email_for_invoices" name="email_for_invoices" value="{{ old('email_for_invoices', $client->email_for_invoices) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('email_for_invoices')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+            
+            <div class="mb-4">
+                <label for="contact_person_name" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Contact person Name</label>
+                <input type="text" id="contact_person_name" name="contact_person_name" value="{{ old('contact_person_name', $client->contact_person_name) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('contact_person_name')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- <div class="mb-4">
+                <label for="contact_person_email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Contact person Email</label>
+                <input type="email" id="contact_person_email" name="contact_person_email" value="{{ old('contact_person_email', $client->contact_person_email) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('contact_person_email')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div> --}}
+
+            <div class="mb-4">
+                <label for="contact_person_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Contact person Phone</label>
+                <input type="tel" id="contact_person_phone" name="contact_person_phone" value="{{ old('contact_person_phone', $client->contact_person_phone) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('contact_person_phone')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="billing_cycle" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Billing cycle</label>
+                <input type="text" id="billing_cycle" name="billing_cycle" value="{{ old('billing_cycle', $client->billing_cycle) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('billing_cycle')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="streamline_engineer_name" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Streamline engineer name</label>
+                <input type="tel" id="streamline_engineer_name" name="streamline_engineer_name" value="{{ old('streamline_engineer_name', $client->streamline_engineer_name) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('streamline_engineer_name')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="streamline_engineer_email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Streamline engineer email</label>
+                <input type="email" id="streamline_engineer_email" name="streamline_engineer_email" value="{{ old('streamline_engineer_email', $client->streamline_engineer_email) }}" 
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                    required>
+                @error('streamline_engineer_email')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+
+            <div class="flex items-center justify-between">
+                <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                    Back to Users List
+                </a>
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Update User
+                </button>
+            </div>
+        </form>
     </div>
 </x-app-layout>

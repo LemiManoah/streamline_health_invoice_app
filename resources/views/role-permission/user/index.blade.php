@@ -53,7 +53,7 @@
                                         @endcan
 
                                         @can('delete user')
-                                        <a href="{{ url('users/'.$user->id.'/delete') }}" class="btn btn-danger mx-2">Delete</a>
+                                        <a href="{{ route('userdelete', $user->id) }}" class="btn btn-danger mx-2">Delete</a>
                                         @endcan
                                     </td>
                                 </tr>

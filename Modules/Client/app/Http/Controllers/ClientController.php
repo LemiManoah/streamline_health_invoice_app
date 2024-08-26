@@ -2,6 +2,7 @@
 
 namespace Modules\Client\Http\Controllers;
 
+use Modules\Client\Http\Requests\CreateClientRequest;
 use Modules\Client\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -44,23 +45,10 @@ class ClientController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateClientRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'facility_level' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'contact_person_name' => 'required|string|max:255',
-            'contact_person_phone' => 'required|string|max:20',
-            'email_for_invoices' => 'required|email|max:255',
-            'billing_cycle' => 'required|string|max:255',
-            'streamline_engineer_name' => 'required|string|max:255',
-            'streamline_engineer_phone' => 'required|string|max:20',
-            'streamline_engineer_email' => 'required|email|max:255',
-        ]);
 
-        $client = Client::create($request->validated());
-        $client->create($request->all());
+        Client::create($request->validated());
 
         return redirect()->route('clients.index')->with('status', 'Client updated successfully!');
 
@@ -71,7 +59,7 @@ class ClientController extends Controller implements HasMiddleware
      */
     public function show(Client $client)
     {
-        return view('clients.show', compact('client'));
+        return view('client::show', compact('client'));
     }
 
     /**
@@ -85,23 +73,11 @@ class ClientController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(CreateClientRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'facility_level' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'contact_person_name' => 'required|string|max:255',
-            'contact_person_phone' => 'required|string|max:20',
-            'email_for_invoices' => 'required|email|max:255',
-            'billing_cycle' => 'required|string|max:255',
-            'streamline_engineer_name' => 'required|string|max:255',
-            'streamline_engineer_phone' => 'required|string|max:20',
-            'streamline_engineer_email' => 'required|email|max:255',
-        ]);
 
         $client = Client::find($id);
-        $client->update($request->all());
+        $client->update($request->validated());
         return redirect()->route('clients.index')->with('status','Client updated successfully!');
     }
 

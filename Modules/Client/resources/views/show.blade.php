@@ -1,62 +1,43 @@
 <x-app-layout>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
+    <x-slot name="header">
+        <h1 class="text-2xl font-bold">Client Details</h1>
+    </x-slot>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Client Details
-                            <a href="{{ route('clients.index') }}" class="btn btn-danger float-end">Back</a>
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <h5>Name:</h5>
-                            <p>{{ $client->name }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Facility Level:</h5>
-                            <p>{{ $client->facility_level }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Location:</h5>
-                            <p>{{ $client->location }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Contact Person Name:</h5>
-                            <p>{{ $client->contact_person_name }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Contact Person Phone:</h5>
-                            <p>{{ $client->contact_person_phone }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Email for Invoices:</h5>
-                            <p>{{ $client->email_for_invoices }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Billing Cycle:</h5>
-                            <p>{{ $client->billing_cycle }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Streamline Engineer Name:</h5>
-                            <p>{{ $client->streamline_engineer_name }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Streamline Engineer Phone:</h5>
-                            <p>{{ $client->streamline_engineer_phone }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Streamline Engineer Email:</h5>
-                            <p>{{ $client->streamline_engineer_email }}</p>
-                        </div>
-                        <div class="mb-3">
-                            <h5>Status:</h5>
-                            <p>{{ $client->status }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-900">Client Information</h2>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Name: <span class="font-medium">{{ $client->name }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Location: <span class="font-medium">{{ $client->location }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Facility Level: <span class="font-medium">{{ $client->facility_level }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Email for Invoices: <span class="font-medium">{{ $client->email_for_invoices }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">contact_person_name: <span class="font-medium">{{ $client->contact_person_name }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">contact_person_phone: <span class="font-medium">{{ $client->contact_person_phone }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Billing Cycle: <span class="font-medium">{{ $client->billing_cycle }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Streamline Engineer Name: <span class="font-medium">{{ $client->streamline_engineer_name }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Streamline Engineer Phone: <span class="font-medium">{{ $client->streamline_engineer_phone }}</span></p>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Streamline Engineer Email: <span class="font-medium">{{ $client->streamline_engineer_email }}</span></p>
+        </div>
+
+        {{-- <div class="mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Roles</h2>
+            @if($user->roles->isEmpty())
+                <p class="mt-2 text-gray-600 dark:text-gray-400">No roles assigned.</p>
+            @else
+                <ul class="list-disc list-inside mt-2 text-gray-600 dark:text-gray-400">
+                    @foreach($user->roles as $role)
+                        <li>{{ $role->name }}</li>
+                    @endforeach
+                </ul>
+            @endif
+        </div> --}}
+
+        <div class="flex items-center justify-between mt-4">
+            <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                Back to Clients List
+            </a>
+            <a href="{{ route('clients.edit', $client->id) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Edit Client
+            </a>
         </div>
     </div>
 </x-app-layout>

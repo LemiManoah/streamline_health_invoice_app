@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('facility_level');
+            $table->enum('facility_level', ['HCI', 'HCII', 'HCIII', 'HCIV', 'Clinic', 'Hospital', 'Referral Hospital']);
             $table->string('location');
+            $table->string('email_for_invoices');
             $table->string('contact_person_name');
             $table->string('contact_person_phone');
-            $table->string('email_for_invoices');
-            $table->string('billing_cycle');
+            $table->integer('billing_cycle_in_years');
             $table->string('streamline_engineer_name');
             $table->string('streamline_engineer_phone');
             $table->string('streamline_engineer_email');
