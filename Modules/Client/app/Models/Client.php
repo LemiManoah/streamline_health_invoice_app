@@ -3,15 +3,16 @@
 namespace Modules\Client\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Client\Database\Factories\ClientFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Client extends Model
 {
-    use HasFactory;
-
-    use SoftDeletes;
+    use Notifiable, HasFactory, SoftDeletes;
+    
 
     /**
      * The attributes that are mass assignable.

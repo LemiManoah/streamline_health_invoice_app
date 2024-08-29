@@ -17,11 +17,11 @@ class CreateClientRequest extends FormRequest
             'location' => 'required|string|max:255',
             'contact_person_name' => 'required|string|max:255',
             'contact_person_phone' => 'required|string|max:20',
-            'email_for_invoices' => 'required|email|max:255',
+            'email_for_invoices' => 'required|email:rfc,dns|max:255',
             'billing_cycle' => 'required|int|max:255',
             'streamline_engineer_name' => 'required|string|max:255',
             'streamline_engineer_phone' => 'required|string|max:20',
-            'streamline_engineer_email' => 'required|email|max:255',
+            'streamline_engineer_email' => 'required|email:rfc,dns|max:255',
         ];
     }
 

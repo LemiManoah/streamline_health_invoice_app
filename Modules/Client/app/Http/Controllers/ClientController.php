@@ -2,14 +2,18 @@
 
 namespace Modules\Client\Http\Controllers;
 
-use Modules\Client\Http\Requests\CreateClientRequest;
 use Modules\Client\Models\Client;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
+use Modules\Client\Emails\VerifyClientEmail;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Modules\Client\Http\Requests\CreateClientRequest;
+use Illuminate\Http\RedirectResponse;
+
+
 
 class ClientController extends Controller implements HasMiddleware
 {
@@ -43,16 +47,23 @@ class ClientController extends Controller implements HasMiddleware
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+     * Store a newly created resource in storage. **/
     public function store(CreateClientRequest $request): RedirectResponse
     {
-
-        Client::create($request->validated());
-
-        return redirect()->route('clients.index')->with('status', 'Client updated successfully!');
-
+        // Create the client with the validated data from the request
+        $client = Client::create($request->validated());
+    
+        // Prepare and send the verification email
+        Mail::to($client->email_for_invoices)->send(new VerifyClientEmail($client));
+    
+        // Optionally, fire the Registered event if needed
+        // event(new Registered($client));
+    
+        // Redirect back to the clients index with a success message
+        return redirect()->route('clients.index')->with('status', 'Client created successfully!');
     }
+    
+
 
     /**
      * Show the specified resource.
@@ -86,8 +97,8 @@ class ClientController extends Controller implements HasMiddleware
      */
     public function destroy($id)
     {
-        $client = Client::find($id);
+        $client = Client::findOrFail($id);
         $client->delete();
-        return redirect()->route('client::index')->with('status','Deleted successfully');
+        return redirect()->route('clients.index')->with('status','Deleted successfully');
     }
 }

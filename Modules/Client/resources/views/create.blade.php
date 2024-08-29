@@ -112,16 +112,6 @@
                 @enderror
             </div>
 
-            <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-800">Password</label>
-                <input type="password" id="password" name="password" 
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                    required>
-                @error('password')
-                    <span class="text-red-600 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
             <div class="flex items-center justify-between">
                 <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                     Back to Client List

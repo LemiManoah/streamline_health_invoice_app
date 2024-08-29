@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use App\Http\Requests\UserRequest;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Middleware\UserMiddleware;
-use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\StaffMiddleware;
-use App\Http\Middleware\SuperMiddleware;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -39,15 +36,8 @@ class UserController extends Controller implements HasMiddleware
         return view('role-permission.user.create', ['roles' => $roles]);
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|max:20',
-            'roles' => 'required'
-        ]);
-
         $user = User::create([
                         'name' => $request->name,
                         'email' => $request->email,
@@ -56,6 +46,7 @@ class UserController extends Controller implements HasMiddleware
 
         $user->syncRoles($request->roles);
 
+        event(new Registered($user));
         return redirect('/users')->with('status','User created successfully with roles');
     }
 
@@ -71,14 +62,8 @@ class UserController extends Controller implements HasMiddleware
     }
 
     // Function to handle user updates
-public function update(Request $request, User $user)
+public function update(UserRequest $request, User $user)
 {
-    // Validate the incoming request data
-    $request->validate([
-        'name' => 'required|string|max:255', // Name is required, a string, and has a maximum length of 255 characters
-        'password' => 'nullable|string|min:8|max:20', // Password is nullable, a string, and has a minimum length of 8 and a maximum length of 20 characters
-        'roles' => 'required' // Roles are required
-    ]);
 
     // Prepare an associative array to store the user's name and email
     $data = [

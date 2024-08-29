@@ -1,7 +1,12 @@
 <?php
 
+use Illuminate\Http\Request;
+use Modules\Client\Models\Client;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Route;
 use Modules\Client\Http\Controllers\ClientController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Modules\Client\Http\Controllers\ClientVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +21,8 @@ use Modules\Client\Http\Controllers\ClientController;
 
 Route::group([], function () {
     Route::resource('clients', ClientController::class);
+    
 });
+
+
+Route::get('/verify-client/{id}/{hash}', [ClientVerificationController::class,'verifyEmail'])->name('client.verify');
