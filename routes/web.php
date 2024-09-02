@@ -36,14 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionToRole'])->name('showAddPermission');
     Route::put('/roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole'])->name('givePermissions');
     
-    // Route::get('/test', function () {
-    //     Mail::to('mazemelo110@gmail.com')->send(
-    //         new \App\Mail\clientInvoiceMail()
-    //     );
 
-    //     return 'Done, email sent';
-    // });
-
+    // Route::get('/sendmail', [SendMailController::class,'sendMail'])->name('sendMail');
 });
 
 

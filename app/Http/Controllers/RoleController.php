@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientMail;
 use Illuminate\Http\Request;
 use App\Models\PermissionCategory;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Routing\Controllers\Middleware;
 use \Spatie\Permission\Middleware\RoleMiddleware;
@@ -50,7 +52,14 @@ class RoleController extends Controller implements HasMiddleware
         Role::create([
             'name' => $request->name
         ]);
-
+        // $mailData = [
+        //     'title' => 'Verify Your Email Address',
+        //     'body' => 'Please confirm your email to activate your account.',
+        //     'verificationUrl' => 'https://yourapp.com/verify?token=your-verification-token', // Replace with the actual link
+        // ];
+        
+        // Mail::to('mazemelo110@gmail.com')->send(new ClientMail($mailData));
+        
         return redirect('roles')->with('status','Role Created Successfully');
     }
 
