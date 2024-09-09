@@ -5,7 +5,12 @@
 
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <div class="mb-4">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-900">Client Information</h2>
+            <div class="flex items-center justify-between mt-4">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-900">Client Information</h2>
+                <a href="{{ route('subscriptions.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Create Subscription Plan for Client
+                </a>
+            </div>
             <p class="mt-2 text-gray-600 dark:text-gray-400">Name: <span class="font-medium">{{ $client->name }}</span></p>
             <p class="mt-2 text-gray-600 dark:text-gray-400">Location: <span class="font-medium">{{ $client->location }}</span></p>
             <p class="mt-2 text-gray-600 dark:text-gray-400">Facility Level: <span class="font-medium">{{ $client->facility_level }}</span></p>
@@ -19,12 +24,13 @@
         </div>
 
         <div class="flex items-center justify-between mt-4">
-            <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+            <a href="{{ route('clients.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Back to Clients List
             </a>
-            <a href="{{ route('clients.edit', $client->id) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Edit Client
+            <a href="{{ route('clients.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Send Invoice
             </a>
+           
         </div>
     </div>
 </x-app-layout>
