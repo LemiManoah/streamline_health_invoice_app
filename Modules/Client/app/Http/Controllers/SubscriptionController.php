@@ -9,6 +9,8 @@ use Modules\Client\Models\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Modules\Client\Models\Subscription;
+use Illuminate\Support\Facades\Notification;
+use Modules\Client\Notifications\SubscriptionNotification;
 
 class SubscriptionController extends Controller
 {
@@ -32,11 +34,33 @@ class SubscriptionController extends Controller
         $validatedData = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'plan_name' => 'required|string|max:255',
-            'billing_cycle' => ['required', Rule::in(['annually', 'biennially', 'triennially'])],
+            'billing_cycle' => 'required',
             'start_date' => 'required|date|after_or_equal:today',
             'amount' => 'required|numeric|min:0',
         ]);
 
+        // // If the client has an active subscription, redirect to the edit page with an error message
+        // if (Subscription::where('client_id', $validatedData['client_id'])->where('status', 'unpaid')->exists()) {
+        //     return redirect()->route('subscriptions.create')->with('error', 'Client already has an active subscription.');
+        // }
+
+        // // If the client has a subscription with the same plan and billing cycle, redirect to the edit page with an error message
+        // if (Subscription::where('client_id', $validatedData['client_id'])
+        //     ->where('plan_name', $validatedData['plan_name'])
+        //     ->where('billing_cycle', $validatedData['billing_cycle'])
+        //     ->where('status', '!=', 'paid')
+        //     ->exists()) {
+        //     return redirect()->route('subscriptions.create')->with('error', 'Client already has a subscription with the same plan and billing cycle.');
+        // }
+
+        // // If the client has a subscription with the same plan and different billing cycle, redirect to the edit page with an error
+        
+            // Check if the client already has a subscription
+        $existingSubscription = Subscription::where('client_id', $validatedData['client_id'])->first();
+
+        if ($existingSubscription) {
+            return redirect()->back()->withErrors('This client already has an existing subscription.');
+        }
         // Calculate the next billing date based on the billing cycle
         $nextBillingDate = $this->calculateNextBillingDate($validatedData['start_date'], $validatedData['billing_cycle']);
 
@@ -47,13 +71,17 @@ class SubscriptionController extends Controller
             'plan_name' => $validatedData['plan_name'],
             'billing_cycle' => $validatedData['billing_cycle'],
             'start_date' => $validatedData['start_date'],
-            'next_billing_date' => $nextBillingDate,
+            'next_billing_date' => null,
             'amount' => $validatedData['amount'],
-            'status' => 'active', // Default status
+            'status' => 'Unpaid', // Default status
          ]);
+          // Find the client
+        $client = Client::find($validatedData['client_id']);
+         // Notify client about the new subscription
+        $client->notify(new SubscriptionNotification($subscription));
 
         // Redirect to the subscriptions index page
-        return redirect()->route('subscriptions.index')->with('success', 'Client Subscription created successfully.');
+        return redirect()->route('clients.index')->with('success', 'Client Subscription created successfully.');
 
     }
 
@@ -64,9 +92,9 @@ class SubscriptionController extends Controller
         switch ($billingCycle) {
             case 'annually':
                 return $date->addYear()->toDateString();
-            case 'biennially':
+            case '2_years':
                 return $date->addYears(2)->toDateString();
-            case 'triennially':
+            case '3_years':
                 return $date->addYears(3)->toDateString();
             case '4_years':
                 return $date->addYears(4)->toDateString();
@@ -88,14 +116,14 @@ class SubscriptionController extends Controller
 
         // Define billing cycle amounts
         $billingCycleAmounts = [
-            'annually' => 120000,     // Example amount for annually
-            '2_years' => 230000,  
-            '3_years' => 340000,
-            '4_years' => 350000,
-            '5_years' => 360000,
-            '6_years' => 370000,
-            '7_years' => 380000,
-            '8_years' => 390000,
+            'annually' => 310000,     // Example amount for annually
+            '2_years' => 320000,  
+            '3_years' => 330000,
+            '4_years' => 340000,
+            '5_years' => 350000,
+            '6_years' => 360000,
+            '7_years' => 370000,
+            '8_years' => 380000,
             
         ];
 
