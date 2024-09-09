@@ -15,5 +15,7 @@ use Modules\Invoice\Http\Controllers\InvoiceController;
 */
 
 Route::group([], function () {
-    Route::resource('invoice', InvoiceController::class)->names('invoice');
+    Route::resource('invoices', InvoiceController::class);
 });
+
+Route::get('/Invoicedashboard', [InvoiceController::class, 'dummy'])->name('invoicedashboard');

@@ -3,12 +3,14 @@
 namespace Modules\Client\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 use Modules\Client\Database\Factories\ClientFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Client extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -43,5 +45,10 @@ class Client extends Model
     protected static function newFactory()
     {
         //return ClientModelFactory::new();
+    }
+    public function routeNotificationForMail($notification)
+    {
+        // Return the email address you want to use for sending notifications
+        return $this->client_email; // Replace with the appropriate attribute if needed
     }
 }

@@ -8,15 +8,28 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Modules\Client\Http\Requests\ClientRequest;
 use Modules\Client\Emails\ClientVerificationMail;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $clients = Client::paginate(10);
+
+        // //search functionality
+        // $search = $request->input('search');
+
+        // // Fetch invoices with search functionality
+        // $invoices = Client::when($search, function ($query, $search) {
+        //     return $query->where('name', 'like', "%{$search}%")
+        //                  ->orWhere('facility_level', 'like', "%{$search}%")
+        //                  ->orWhere('contact_person_name', 'like', "%{$search}%")
+        //                  ->orWhere('streamline_engineer_name', 'like', "%{$search}%");
+        // })->get();
+
         return view('client::index', compact('clients'));
     }
 
@@ -92,5 +105,19 @@ class ClientController extends Controller
         $client->delete();
 
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+
+        $clients = Client::query()
+            ->where('name', 'LIKE', "%{$query}%")
+            ->orWhere('facility_level', 'LIKE', "%{$query}%")
+            ->orWhere('streamline_engineer_name', 'LIKE', "%{$query}%")
+            ->paginate(10);
+
+
+        return view('client::index', compact('clients'));
     }
 }

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('client_id');
             $table->string('invoice_number');
+            $table->string('client_name');
             $table->date('due_date');
             $table->decimal('total_amount', 10, 2);
+            $table->enum('status', ['paid', 'unpaid']); 
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');

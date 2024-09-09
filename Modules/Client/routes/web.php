@@ -22,6 +22,8 @@ Route::group([], function () {
     Route::resource('subscriptions', SubscriptionController::class);
     Route::post('/get-amount', [SubscriptionController::class, 'getAmount'])->name('get.amount');
 });
+//search 
+Route::get('/search', [ClientController::class, 'search'])->name('search.route');
 
 // Custom verification route
 Route::get('/clients/verify/{token}', [ClientVerificationController::class, 'verify'])->name('clients.custom.verify');
