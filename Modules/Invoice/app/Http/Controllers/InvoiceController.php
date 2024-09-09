@@ -2,10 +2,11 @@
 
 namespace Modules\Invoice\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Modules\Invoice\Http\Requests\InvoiceRequest;
 
 class InvoiceController extends Controller
 {
@@ -28,9 +29,9 @@ class InvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(InvoiceRequest $request)
     {
-        //
+        
     }
 
     /**
@@ -52,7 +53,7 @@ class InvoiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
         //
     }
