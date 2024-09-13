@@ -19,3 +19,5 @@ Route::group([], function () {
 });
 
 Route::get('/Invoicedashboard', [InvoiceController::class, 'dummy'])->name('invoicedashboard');
+Route::post('/get-amount', [InvoiceController::class, 'getAmount'])->name('get.amount');
+

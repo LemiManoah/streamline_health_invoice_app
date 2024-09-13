@@ -6,6 +6,8 @@
         </h2>
     </x-slot>
 
+    <div class="p-2"></div>
+
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <!-- Desktop View -->
         <div class="hidden md:block">
@@ -13,7 +15,7 @@
                 <a href="{{ route('clients.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Add New Client
                 </a>
-                <form action="{{ route('search.route') }}" method="GET" class="flex items-center">
+                <form action="{{ route('client.search') }}" method="GET" class="flex items-center">
                     <input type="text" name="search" placeholder="Search clients..." 
                         class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
                         value="{{ request('search') }}">

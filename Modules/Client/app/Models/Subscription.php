@@ -18,9 +18,9 @@ class Subscription extends Model
     protected $fillable = [
         'client_id',
         'plan_name',
-        'billing_cycle',
+        'billing_cycle_in_years',
         'start_date',
-        'end_date',
+        'next_billing_date',
         'amount',
         'status',
         'deleted_at',
@@ -29,5 +29,10 @@ class Subscription extends Model
     protected static function newFactory()
     {
         //return SubscriptionFactory::new();
+    }
+    // Get the client associated with the subscription
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 }

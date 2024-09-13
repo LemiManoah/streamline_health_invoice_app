@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Modules\Client\Database\Factories\ClientFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Invoice\Models\Invoice;
 
 class Client extends Model
 {
@@ -22,7 +23,6 @@ class Client extends Model
         'client_email',
         'contact_person_name',
         'contact_person_phone',
-        'billing_cycle_in_years',
         'streamline_engineer_name',
         'streamline_engineer_phone',
         'streamline_engineer_email',
@@ -50,5 +50,11 @@ class Client extends Model
     {
         // Return the email address you want to use for sending notifications
         return $this->client_email; // Replace with the appropriate attribute if needed
+    }
+    public function invoice(){
+        return $this->hasMany(Invoice::class);
+    }
+    public function subscription(){
+        return $this->hasOne(Subscription::class);
     }
 }

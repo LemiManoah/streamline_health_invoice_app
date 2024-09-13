@@ -34,47 +34,21 @@ class SubscriptionController extends Controller
         $validatedData = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'plan_name' => 'required|string|max:255',
-            'billing_cycle' => 'required',
-            'start_date' => 'required|date|after_or_equal:today',
+            'billing_cycle_in_years' => 'required|integer', // Make sure this matches the input type and constraints
+            'start_date' => 'required|date',
+            'next_billing_date' => 'required|date|after_or_equal:start_date',
             'amount' => 'required|numeric|min:0',
+            'status' => 'required|in:paid,unpaid',
         ]);
 
-        // // If the client has an active subscription, redirect to the edit page with an error message
-        // if (Subscription::where('client_id', $validatedData['client_id'])->where('status', 'unpaid')->exists()) {
-        //     return redirect()->route('subscriptions.create')->with('error', 'Client already has an active subscription.');
-        // }
-
-        // // If the client has a subscription with the same plan and billing cycle, redirect to the edit page with an error message
-        // if (Subscription::where('client_id', $validatedData['client_id'])
-        //     ->where('plan_name', $validatedData['plan_name'])
-        //     ->where('billing_cycle', $validatedData['billing_cycle'])
-        //     ->where('status', '!=', 'paid')
-        //     ->exists()) {
-        //     return redirect()->route('subscriptions.create')->with('error', 'Client already has a subscription with the same plan and billing cycle.');
-        // }
-
-        // // If the client has a subscription with the same plan and different billing cycle, redirect to the edit page with an error
-        
-            // Check if the client already has a subscription
         $existingSubscription = Subscription::where('client_id', $validatedData['client_id'])->first();
 
         if ($existingSubscription) {
             return redirect()->back()->withErrors('This client already has an existing subscription.');
         }
-        // Calculate the next billing date based on the billing cycle
-        $nextBillingDate = $this->calculateNextBillingDate($validatedData['start_date'], $validatedData['billing_cycle']);
-
         
          // Create the subscription
-         $subscription = Subscription::create([
-            'client_id' => $validatedData['client_id'],
-            'plan_name' => $validatedData['plan_name'],
-            'billing_cycle' => $validatedData['billing_cycle'],
-            'start_date' => $validatedData['start_date'],
-            'next_billing_date' => null,
-            'amount' => $validatedData['amount'],
-            'status' => 'Unpaid', // Default status
-         ]);
+         $subscription = Subscription::create($validatedData);
           // Find the client
         $client = Client::find($validatedData['client_id']);
          // Notify client about the new subscription
@@ -84,56 +58,6 @@ class SubscriptionController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client Subscription created successfully.');
 
     }
-
-    protected function calculateNextBillingDate($startDate, $billingCycle)
-    {
-        $date = \Carbon\Carbon::parse($startDate);
-
-        switch ($billingCycle) {
-            case 'annually':
-                return $date->addYear()->toDateString();
-            case '2_years':
-                return $date->addYears(2)->toDateString();
-            case '3_years':
-                return $date->addYears(3)->toDateString();
-            case '4_years':
-                return $date->addYears(4)->toDateString();
-            case '5_years':
-                return $date->addYears(5)->toDateString();
-            case '6_years':
-                return $date->addYears(6)->toDateString();
-            case '7_years':
-                return $date->addYears(7)->toDateString();
-            case '8_years':
-                return $date->addYears(8)->toDateString();
-            default:
-                throw new \InvalidArgumentException("Invalid billing cycle: {$billingCycle}");
-        }
-    }
-    public function getAmount(Request $request)
-    {
-        $billingCycle = $request->input('billing_cycle');
-
-        // Define billing cycle amounts
-        $billingCycleAmounts = [
-            'annually' => 310000,     // Example amount for annually
-            '2_years' => 320000,  
-            '3_years' => 330000,
-            '4_years' => 340000,
-            '5_years' => 350000,
-            '6_years' => 360000,
-            '7_years' => 370000,
-            '8_years' => 380000,
-            
-        ];
-
-        // Determine the amount based on the selected billing cycle
-        $amount = $billingCycleAmounts[$billingCycle] ?? 0;
-
-        // Return the amount as JSON response
-        return response()->json(['amount' => $amount]);
-    }
-
     /**
      * Show the specified resource.
      */

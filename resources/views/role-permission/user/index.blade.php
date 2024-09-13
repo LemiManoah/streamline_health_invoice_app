@@ -1,10 +1,16 @@
 <x-app-layout>
 
-    <div class="container mt-5">
-        <a href="{{ url('roles') }}" class="btn btn-primary mx-1">Roles</a>
-        <a href="{{ url('permissions') }}" class="btn btn-info mx-1">Permissions</a>
-        <a href="{{ url('users') }}" class="btn btn-warning mx-1">Users</a>
-    </div>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <div class="container mt-1">
+                <a href="{{ url('roles') }}" class="btn btn-primary mx-1">Roles</a>
+                <a href="{{ url('permissions') }}" class="btn btn-info mx-1">Permissions</a>
+                <a href="{{ url('users') }}" class="btn btn-warning mx-1">Users</a>
+            </div>
+        </h2>
+    </x-slot>
+  
+
 
     <div class="container mt-2">
         <div class="row">

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade'); // Links to clients table
             $table->string('plan_name'); // Name of the subscribed plan
-            $table->enum('billing_cycle', ['annually', '2_years', '3_years', '4_years', '5_years', '6_years', '7_years', '8_years']); // Billing cycle options
             $table->date('start_date'); // When the subscription started
+            $table->integer('billing_cycle_in_years');
             $table->date('next_billing_date'); // Next invoice date
             $table->decimal('amount', 10, 2); // Subscription amount
             $table->enum('status', ['paid', 'unpaid']); // Current status of the subscription

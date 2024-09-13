@@ -38,7 +38,7 @@ class SubscriptionNotification extends Notification
             ->greeting('Hello ' . $notifiable->name . ',')
             ->line('A new subscription has been created for you.')
             ->line('Plan: ' . $this->subscription->plan_name)
-            ->line('Billing Cycle: ' . $this->subscription->billing_cycle)
+            ->line('Billing Cycle: ' . $this->subscription->billing_cycle_in_years)
             ->line('Amount: ' . $this->subscription->amount)
             ->line('Start Date: ' . $this->subscription->start_date)
             ->line('Next Billing Date: ' . $this->subscription->next_billing_date)
@@ -54,7 +54,7 @@ class SubscriptionNotification extends Notification
         return [
             'subscription_id' => $this->subscription->id,
             'plan_name' => $this->subscription->plan_name,
-            'billing_cycle' => $this->subscription->billing_cycle,
+            'billing_cycle' => $this->subscription->billing_cycle_in_years,
             'amount' => $this->subscription->amount,
         ];
     }

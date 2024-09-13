@@ -8,7 +8,9 @@ use Modules\Client\Models\Client;
 use Modules\Invoice\Models\Invoice;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Modules\Client\Models\Subscription;
 use Modules\Invoice\Http\Requests\InvoiceRequest;
+use Modules\Invoice\Notifications\InvoiceNotification;
 
 class InvoiceController extends Controller
 {
@@ -20,61 +22,86 @@ class InvoiceController extends Controller
         $invoices = Invoice::all();
         return view('invoice::index', compact('invoices'));
     }
-
-    public function dummy()
-    {
-        $invoices = [
-            ['id' => 'INV-001', 'customer' => 'John Doe', 'dueDate' => '2023-06-15', 'total' => 1500.0, 'status' => 'Paid'],
-            ['id' => 'INV-002', 'customer' => 'Jane Smith', 'dueDate' => '2023-07-01', 'total' => 750.0, 'status' => 'Overdue'],
-            ['id' => 'INV-003', 'customer' => 'Bob Johnson', 'dueDate' => '2023-08-01', 'total' => 2000.0, 'status' => 'Pending'],
-            ['id' => 'INV-004', 'customer' => 'Alice Williams', 'dueDate' => '2023-09-01', 'total' => 1200.0, 'status' => 'Paid'],
-            ['id' => 'INV-005', 'customer' => 'Tom Davis', 'dueDate' => '2023-10-01', 'total' => 900.0, 'status' => 'Overdue'],
-        ];
-
-        return view('invoice::dashboard', ['invoices' => $invoices]);
-    }
-
     /**
      * Show the form for creating a new resource.
      */
+    // public function create()
+    // {
+    //     $clients = Client::all();
+    //     return view('invoice::create', compact('clients'));
+    // }
+
+    // /**
+    //  * Store a newly created resource in storage.
+    //  */
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'client_id' => 'required|exists:clients,id',
+    //         'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number',
+    //         'due_date' => 'required|date',
+    //         'total_amount' => 'required|numeric|min:0',
+    //         'status' => 'required|in:paid,unpaid',
+    //     ]);
+    //     // Fetch the latest invoice number and increment it
+    //     $latestInvoice = Invoice::orderBy('id', 'desc')->first();
+    //     $nextInvoiceNumber = $latestInvoice ? intval(substr($latestInvoice->invoice_number, 4)) + 1 : 1;
+
+    //     // Format the new invoice number as INV-001, INV-002, etc.
+    //     $formattedInvoiceNumber = 'INV-' . str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
+
+    //     // Create the invoice
+    //     Invoice::create([
+    //         'client_id' => $request->client_id,
+    //         'invoice_number' => $formattedInvoiceNumber,
+    //         'due_date' => $request->due_date,
+    //         'total_amount' => $request->total_amount,
+    //         'status' => $request->status,
+    //     ]);
+
+    //     // Redirect to the invoices index page with a success message
+    //     return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+    // }
     public function create()
     {
         $clients = Client::all();
-        return view('invoice::create', compact('clients'));
+        $subscriptions = Subscription::all();
+        // $subscriptions = Subscription::where('client_id', $client->id)->get(); 
+
+        return view('invoice::create', compact('clients', 'subscriptions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'client_id' => 'required|exists:clients,id',
-            'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number',
-            'client_name' => 'required|string|max:255',
-            'due_date' => 'required|date',
+            'subscription_id' => 'required|exists:subscriptions,id',
             'total_amount' => 'required|numeric|min:0',
-            'status' => 'required|in:paid,unpaid',
-        ]);
-        // Fetch the latest invoice number and increment it
-        $latestInvoice = Invoice::orderBy('id', 'desc')->first();
-        $nextInvoiceNumber = $latestInvoice ? intval(substr($latestInvoice->invoice_number, 4)) + 1 : 1;
-
-        // Format the new invoice number as INV-001, INV-002, etc.
-        $formattedInvoiceNumber = 'INV-' . str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
-
-        // Create the invoice
-        Invoice::create([
-            'client_id' => $request->client_id,
-            'invoice_number' => $formattedInvoiceNumber,
-            'client_name' => $request->client_name,
-            'due_date' => $request->due_date,
-            'total_amount' => $request->total_amount,
-            'status' => $request->status,
+            'due_date' => 'required|date',
+            'status' => 'required|string',
         ]);
 
-        // Redirect to the invoices index page with a success message
-        return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+        $client = Client::findOrFail($request->client_id);
+
+        // Generate the invoice number in the format INV-001
+        $lastInvoice = Invoice::orderBy('id', 'desc')->first();
+        $nextInvoiceNumber = 'INV-' . str_pad($lastInvoice ? $lastInvoice->id + 1 : 1, 3, '0', STR_PAD_LEFT);
+
+        // Create new invoice
+        $invoices = new Invoice();
+        $invoices->invoice_number = $request->invoice_number;
+        $invoices->client_id = $request->client_id;
+        $invoices->subscription_id = $request->subscription_id;
+        $invoices->total_amount = $request->total_amount;
+        $invoices->due_date = $request->due_date;
+        $invoices->status = $request->status;
+        $invoices->save();
+
+        // Send the notification
+        // $client->notify(new InvoiceNotification($invoice));
+
+        // Return the invoice preview
+        return view('invoice::index', compact('invoices',  'client'));
     }
 
     /**
@@ -101,8 +128,8 @@ class InvoiceController extends Controller
     {
         $request->validate([
             'client_id' => 'required|exists:clients,id',
+            'subscription_id' => 'required|exists:subscription',
             'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number,' . $invoice->id,
-            'client_name' => 'required|string|max:255',
             'due_date' => 'required|date',
             'total_amount' => 'required|numeric|min:0',
             'status' => 'required|in:paid,unpaid',
@@ -126,4 +153,16 @@ class InvoiceController extends Controller
         // Redirect to the invoices index page with a success message
         return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
     }
+
+    public function getAmount(Request $request)
+    {
+        $subscription = Subscription::find($request->subscription_id);
+
+        if ($subscription) {
+            return response()->json(['amount' => $subscription->amount]);
+        } else {
+            return response()->json(['error' => 'Subscription not found'], 404);
+        }
+    }
+
 }
