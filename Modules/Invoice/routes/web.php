@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Invoice\Http\Controllers\InvoiceController;
+use Modules\Invoice\Http\Controllers\SendMailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,4 @@ Route::group([], function () {
 Route::get('/Invoicedashboard', [InvoiceController::class, 'dummy'])->name('invoicedashboard');
 Route::post('/get-amount', [InvoiceController::class, 'getAmount'])->name('get.amount');
 
+Route::get('send/mail', [SendMailController::class, 'sendMailWithAttachment'])->name('sendMail');
