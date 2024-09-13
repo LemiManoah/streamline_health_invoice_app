@@ -25,7 +25,7 @@
                         <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Client Name</label>
                         <input type="text" id="name" name="name" value="{{ old('name') }}" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                            readonly>
+                            required>
                         @error('name')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -49,7 +49,7 @@
                         <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Location</label>
                         <input type="text" id="location" name="location" value="{{ old('location') }}" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                            readonly>
+                            required>
                         @error('location')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
@@ -104,6 +104,17 @@
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
+                    
+                    <div class="mb-4">
+                        <label for="streamline_engineer_email" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Streamline Engineer Email</label>
+                        <input type="email" id="streamline_engineer_email" name="streamline_engineer_email" value="{{ old('streamline_engineer_email') }}" 
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
+                            required>
+                        @error('streamline_engineer_email')
+                            <span class="text-red-600 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+
 
                     <div class="flex items-center justify-between">
                         <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">

@@ -59,18 +59,6 @@ class ClientController extends Controller
     
         return redirect()->route('clients.index')->with('success', 'Client created and verification email sent.');
     }
-
-    // protected function sendVerificationEmail($email, $name)
-    // {
-    //     $mailData = [
-    //         'title' => 'Verify Your Email Address',
-    //         'body' => "Hello $name, please verify your email to activate your account.",
-    //         'verificationUrl' => route('verification.verify', ['token' => 'your-verification-token']), // Replace with actual verification logic
-    //     ];
-
-    //     // Send the email to the dynamic address
-    //     Mail::to($email)->send(new ClientMail($mailData));
-    // }
     
     public function show($id)
     {

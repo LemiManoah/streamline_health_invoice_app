@@ -4,6 +4,7 @@ namespace Modules\Invoice\Emails;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,14 +14,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class InvoiceMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $mailData;
+    public $invoice;
+    public $client;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct($invoice, $client)
     {
-        $this->mailData = $mailData;
+        $this->client = $client;
+        $this->invoice = $invoice;
     }
 
     /**
@@ -29,7 +32,7 @@ class InvoiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Mail',
+            subject: 'Invoice Mail',
         );
     }
     /**
@@ -38,7 +41,11 @@ class InvoiceMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'invoice::emails.InvoiceMail'
+            view: 'invoice::emails.invoice_mail',
+            with: [
+                'invoice' => $this->invoice,
+                'client' => $this->client, 
+            ]
         );
     }
 
@@ -49,10 +56,14 @@ class InvoiceMail extends Mailable
      */
     public function attachments(): array
     {
+        // Generate the PDF in memory
+        $pdf = Pdf::loadView('invoice::emails.invoice_template', ['invoice' => $this->invoice, 'client' => $this->client]);
+
+        // Attach the PDF to the email
         return [
-             Attachment::fromPath('/path/to/file')
-             ->as('name.pdf')
-             ->mimeType('application/pdf')
+            Attachment::fromData(fn() => $pdf->output(), 'streamline_invoice.pdf')
+                      ->withMime('application/pdf')
         ];
+    
     }
 }
