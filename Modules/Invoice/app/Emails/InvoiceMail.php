@@ -20,9 +20,8 @@ class InvoiceMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($invoice, $client)
+    public function __construct($invoice, )
     {
-        $this->client = $client;
         $this->invoice = $invoice;
     }
 
@@ -44,7 +43,7 @@ class InvoiceMail extends Mailable
             view: 'invoice::emails.invoice_mail',
             with: [
                 'invoice' => $this->invoice,
-                'client' => $this->client, 
+                
             ]
         );
     }
@@ -57,7 +56,7 @@ class InvoiceMail extends Mailable
     public function attachments(): array
     {
         // Generate the PDF in memory
-        $pdf = Pdf::loadView('invoice::emails.invoice_template', ['invoice' => $this->invoice, 'client' => $this->client]);
+        $pdf = Pdf::loadView('invoice::emails.invoice_template', ['invoice' => $this->invoice]);
 
         // Attach the PDF to the email
         return [

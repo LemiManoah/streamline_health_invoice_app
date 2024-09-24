@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -42,5 +42,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 require __DIR__.'/auth.php';
-
-

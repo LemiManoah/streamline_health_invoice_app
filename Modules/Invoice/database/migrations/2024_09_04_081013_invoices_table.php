@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('client_id');
-            $table->string('invoice_number');
+           
             $table->date('due_date');
             $table->decimal('total_amount', 10, 2);
             $table->enum('status', ['paid', 'unpaid']); 

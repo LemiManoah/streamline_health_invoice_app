@@ -64,6 +64,9 @@ class ClientController extends Controller
     {
         // Retrieve the client with the given ID and show its details
         $client = Client::findOrFail($id);
+
+        //eager load subscriptions
+        $client->load('subscription');
         return view('client::show', compact('client'));
     }
 
