@@ -3,33 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modules\Client\Models\Client;
+use Illuminate\Support\Facades\DB;
+use Modules\Invoice\Models\Invoice;
+use Modules\Client\Models\Subscription;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
-{
-    $dashboardData = [
-        [
-            'count' => 82,
-            'label' => 'Total Clients',
-            'icon' => 'clients', // reference to the icon
-            'color' => 'bg-indigo-600'
-        ],
-        [
-            'count' => 21,
-            'label' => 'New Clients',
-            'icon' => 'new_clients',
-            'color' => 'bg-orange-600'
-        ],
-        [
-            'count' => 42,
-            'label' => 'Notifications',
-            'icon' => 'notifications',
-            'color' => 'bg-pink-600'
-        ]
-    ];
+    public function index()
+    {
+        // Total Clients
+        $totalClients = Client::count();
 
-    return view('dashboard', compact('dashboardData'));
-}
 
+        // Total Revenue (assuming you have a 'total_amount' column in invoices table)
+        $totalRevenue = Invoice::sum('total_amount');
+
+        // Recent Clients
+        $recentClients = Client::latest()->take(5)->get();
+
+        // Recent Invoices
+        $recentInvoices = Invoice::with('client')->latest()->take(5)->get();
+
+        // Clients by Verification Status
+        $clientsByVerificationStatus = Client::groupBy('verification_status')
+            ->select('verification_status', DB::raw('count(*) as total'))
+            ->get();
+
+        return view('dashboard', compact(
+            'totalClients',
+            'totalRevenue',
+            'recentClients',
+            'recentInvoices',
+            'clientsByVerificationStatus'
+        ));
+    }
 }
