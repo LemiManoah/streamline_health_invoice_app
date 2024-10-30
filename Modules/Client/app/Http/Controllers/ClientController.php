@@ -18,18 +18,6 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $clients = Client::paginate(10);
-
-        // //search functionality
-        // $search = $request->input('search');
-
-        // // Fetch invoices with search functionality
-        // $invoices = Client::when($search, function ($query, $search) {
-        //     return $query->where('name', 'like', "%{$search}%")
-        //                  ->orWhere('facility_level', 'like', "%{$search}%")
-        //                  ->orWhere('contact_person_name', 'like', "%{$search}%")
-        //                  ->orWhere('streamline_engineer_name', 'like', "%{$search}%");
-        // })->get();
-
         return view('client::index', compact('clients'));
     }
 
@@ -63,10 +51,7 @@ class ClientController extends Controller
     public function show($id)
     {
         // Retrieve the client with the given ID and show its details
-        $client = Client::findOrFail($id);
-
-        //eager load subscriptions
-        $client->load('subscription');
+        $client = Client::with('subscription')->findOrFail($id);
         return view('client::show', compact('client'));
     }
 

@@ -79,7 +79,8 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $clients = Client::all();
-        return view('invoice::edit', compact('invoice', 'clients'));
+        $subscriptions = Subscription::all();
+        return view('invoice::edit', compact('invoice', 'clients', 'subscriptions'));
     }
 
     /**
@@ -124,6 +125,33 @@ class InvoiceController extends Controller
         } else {
             return response()->json(['error' => 'Subscription not found'], 404);
         }
+    }
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        // Assuming you're searching invoices by client name or invoice number
+        $invoices = Invoice::where('status', 'like', "%{$search}%")
+                    ->orWhereHas('client', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%");
+                    })
+                    ->get();
+
+        return view('invoice::index', compact('invoices'));
+    }
+
+    public function getSubscriptionDetails(Request $request)
+    {
+        $subscription = Subscription::find($request->subscription_id);
+
+        if ($subscription) {
+            return response()->json([
+                'amount' => $subscription->amount, 
+                'due_date' => $subscription->next_billing_date->format('Y-m-d')
+            ]);
+        }
+
+        return response()->json(['error' => 'Subscription not found'], 404);
     }
 
 }

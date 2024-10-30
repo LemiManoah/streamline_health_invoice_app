@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create Subscription') }}
+            {{ __('Edit Invoice') }}
         </h2>
     </x-slot>
 
@@ -18,17 +18,18 @@
                     </div>
                 @endif
 
-                <form action="{{ route('subscriptions.store') }}" method="POST">
+                <form action="{{ route('invoices.update', $invoice->id) }}" method="POST">
                     @csrf
+                    @method('PUT')
 
                     <div class="mb-4">
                         <label for="client_id" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Client</label>
                         <select name="client_id" id="client_id" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
                             required>
-                            <option value="" disabled selected>Select a client</option>
+                            <option value="" disabled>Select a client</option>
                             @foreach($clients as $client)
-                                <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                <option value="{{ $client->id }}" {{ old('client_id', $invoice->client_id) == $client->id ? 'selected' : '' }}>
                                     {{ $client->name }}
                                 </option>
                             @endforeach
@@ -39,50 +40,38 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="plan_name" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Plan Name</label>
-                        <input type="text" id="plan_name" name="plan_name" value="{{ old('plan_name') }}" 
+                        <label for="subscription_id" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Subscription</label>
+                        <select name="subscription_id" id="subscription_id" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
                             required>
-                        @error('plan_name')
+                            <option value="" disabled>Select a Subscription</option>
+                            @foreach($subscriptions as $subscription)
+                                <option value="{{ $subscription->id }}" {{ old('subscription_id', $invoice->subscription_id) == $subscription->id ? 'selected' : '' }}>
+                                    {{ $subscription->plan_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('subscription_id')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Start Date</label>
-                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date') }}" 
+                        <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Due Date</label>
+                        <input type="date" id="due_date" name="due_date" value="{{ old('due_date', $invoice->due_date) }}" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
                             required>
-                        @error('start_date')
-                            <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
-                        <label for="billing_cycle_in_years" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Billing Cycle(years)</label>
-                        <input type="number" id="billing_cycle_in_years" name="billing_cycle_in_years" value="{{ old('billing_cycle_in_years') }}" 
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                            required>
-                        @error('billing_cycle_in_years')
+                        @error('due_date')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label for="next_billing_date" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Next Billing Date</label>
-                        <input type="date" id="next_billing_date" name="next_billing_date" value="{{ old('next_billing_date') }}" 
+                        <label for="total_amount" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Total Amount</label>
+                        <input type="number" id="total_amount" name="total_amount" value="{{ old('total_amount', $invoice->total_amount) }}" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                            required>
-                        @error('next_billing_date')
-                            <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                        <input type="number" id="amount" name="amount" value="{{ old('amount') }}" 
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
-                            required>
-                        @error('amount')
+                            step="0.01" required>
+                        @error('total_amount')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
@@ -92,25 +81,59 @@
                         <select id="status" name="status" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" 
                             required>
-                            <option value="" disabled selected>Select a status</option>
-                            <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
-                            <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                            <option value="" disabled>Select a status</option>
+                            @foreach(['paid', 'unpaid'] as $status)
+                                <option value="{{ $status }}" {{ old('status', $invoice->status) == $status ? 'selected' : '' }}>
+                                    {{ ucfirst($status) }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('status')
                             <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror  
+                        @enderror
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <a href="{{ route('clients.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            Back to Client List
+                        <a href="{{ route('invoices.index') }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                            Back to Invoice List
                         </a>
                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-white text-xs uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Create Subscription
+                            Update Invoice
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#subscription_id').on('change', function () {
+                let subscriptionId = $(this).val();
+                
+                if (subscriptionId) {
+                    $.ajax({
+                        url: '{{ route("get.subscription.details") }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            subscription_id: subscriptionId
+                        },
+                        success: function (response) {
+                            $('#total_amount').val(response.amount);
+                            $('#due_date').val(response.due_date);
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    $('#total_amount').val('');
+                    $('#due_date').val('');
+                }
+            });
+        });
+    </script>
+    
 </x-app-layout>

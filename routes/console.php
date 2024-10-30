@@ -9,5 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command('invoices:send-reminders')->daily();
-Schedule::command('invoices:generate')->daily();
+Schedule::command('invoices:send-reminders')->everyMinute();
+Schedule::command('invoices:generate')->everySecond();

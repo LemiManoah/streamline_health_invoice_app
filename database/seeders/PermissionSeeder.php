@@ -37,6 +37,21 @@ class PermissionSeeder extends Seeder
             'Client Management' => [
                 'create clients',
                 'view clients',
+                'delete clients',
+                'edit clients'
+            ],
+            
+            'Invoice Management' => [
+                'create invoice',
+                'view invoice',
+                'edit invoice',
+                'delete invoice',
+            ],
+            'Subscription Management' => [
+                'create subscription',
+                'view subscription',
+                'edit subscription',
+                'delete subscription',
             ],
         ];
 

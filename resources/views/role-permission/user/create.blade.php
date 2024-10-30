@@ -3,6 +3,8 @@
         <h1 class="text-2xl font-bold">Create User</h1>
     </x-slot>
 
+    <div class="p-2"></div>
+
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <form action="{{ route('users.store') }}" method="POST">
             @csrf

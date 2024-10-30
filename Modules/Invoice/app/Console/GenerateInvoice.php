@@ -33,11 +33,11 @@ class GenerateInvoice extends Command
             $invoice->save();
 
             // Send invoice email
-            Mail::to($subscription->client->email)->send(new InvoiceMail($invoice));
+            Mail::to($subscription->client->client_email)->send(new InvoiceMail($invoice));
 
             // Update subscription's next billing date
-            $subscription->next_billing_date = now()->addYears($subscription->billing_cycle_in_years);
-            $subscription->save();
+            // $subscription->next_billing_date = now()->addYears($subscription->billing_cycle_in_years);
+            // $subscription->save();
         }
 
         $this->info('Invoices generated and sent successfully.');

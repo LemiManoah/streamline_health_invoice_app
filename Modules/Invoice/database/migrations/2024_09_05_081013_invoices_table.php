@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('client_id');
-           
+            $table->unsignedBigInteger('subscription_id'); 
+            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
             $table->date('due_date');
             $table->decimal('total_amount', 10, 2);
             $table->enum('status', ['paid', 'unpaid']); 

@@ -3,9 +3,9 @@
 namespace Modules\Invoice\Console;
 
 use Illuminate\Console\Command;
+use Modules\Invoice\Emails\RemindersMail;
 use Modules\Invoice\Models\Invoice;
 use Illuminate\Support\Facades\Mail;
-use Modules\Invoice\Emails\InvoiceMail;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -16,12 +16,12 @@ class SendInvoiceReminders extends Command
 
     public function handle()
     {
-        $unpaidInvoices = Invoice::where('status', 'unpaid')
-                                 ->where('due_date', '<=', now()->addDays(7))
+        $unpaidInvoices = Invoice::where('due_date', '<=', now()->addDays(7))
+                                 ->where('status', 'unpaid')
                                  ->get();
        
         foreach ($unpaidInvoices as $invoice) {
-            Mail::to($invoice->client->email)->send(new InvoiceMail($invoice));
+            Mail::to($invoice->client->client_email)->send(new RemindersMail($invoice));
         }
 
         $this->info('Invoice reminders sent successfully.');

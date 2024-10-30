@@ -17,4 +17,8 @@ use Modules\Invoice\Http\Controllers\SendMailController;
 
 Route::group([], function () {
     Route::resource('invoices', InvoiceController::class);
+    Route::post('/get-subscription-details', [InvoiceController::class, 'getSubscriptionDetails'])->name('get.subscription.details');
+
 });
+
+Route::get('/invoice/search', [InvoiceController::class, 'search'])->name('invoice.search');

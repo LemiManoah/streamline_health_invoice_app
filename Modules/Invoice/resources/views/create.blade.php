@@ -110,7 +110,7 @@
                 
                 if (subscriptionId) {
                     $.ajax({
-                        url: '{{ route("get.amount") }}',
+                        url: '{{ route("get.subscription.details") }}',
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -118,6 +118,7 @@
                         },
                         success: function (response) {
                             $('#total_amount').val(response.amount);
+                            $('#due_date').val(response.due_date);
                         },
                         error: function (xhr) {
                             console.error(xhr.responseText);
@@ -125,8 +126,10 @@
                     });
                 } else {
                     $('#total_amount').val('');
+                    $('#due_date').val('');
                 }
             });
         });
     </script>
+    
 </x-app-layout>

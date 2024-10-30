@@ -49,24 +49,26 @@
             </div>
         </div>
 
-
-        <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md">
-            <!-- Subscription Information -->
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200">Client Subscription Information</h3>
-
-            @if ($client->subscription)
+        {{-- Subscription information --}}
+        @if ($client->subscriptions?->count())
+        @foreach ($client->subscriptions as $subscription)
+            <div class="mt-4 p-4 border-b border-gray-300 dark:border-gray-600">
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Billing Cycle in years: <span
-                        class="font-medium">{{ $client->subscription->billing_cycle_in_years }}</span></p>
+                        class="font-medium">{{ $subscription->billing_cycle_in_years }}</span></p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Plan: <span
-                        class="font-medium">{{ $client->subscription->plan_name }}</span></p>
+                        class="font-medium">{{ $subscription->plan_name }}</span></p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Status: <span
-                        class="font-medium">{{ $client->subscription->status }}</span></p>
+                        class="font-medium">{{ $subscription->status }}</span></p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Next Billing Date: <span
-                        class="font-medium">{{ $client->subscription->next_billing_date }}</span></p>
-            @else
-                <p class="text-sm text-red-600 dark:text-red-400 mt-2">No subscription found for this client.</p>
-            @endif
-        </div>
+                        class="font-medium">{{ $subscription->next_billing_date }}</span></p>
+            </div>
+        @endforeach
+        @else
+            <p class="text-sm text-red-600 dark:text-red-400 mt-2">No subscriptions found for this client.</p>
+        @endif
+    
+
+        
 
         <!-- Buttons Section -->
         <div class="flex items-center justify-between mt-8">

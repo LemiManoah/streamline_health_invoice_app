@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
@@ -62,7 +63,7 @@ class UserController extends Controller implements HasMiddleware
     }
 
     // Function to handle user updates
-public function update(UserRequest $request, User $user)
+public function update(ProfileUpdateRequest $request, User $user)
 {
 
     // Prepare an associative array to store the user's name and email
@@ -85,7 +86,7 @@ public function update(UserRequest $request, User $user)
     $user->syncRoles($request->roles);
 
     // Redirect the user back to the users list with a success message
-    return redirect('/users')->with('status','User Updated Successfully with roles');
+    return view('role-permission.user.index')->with('status','User Updated Successfully with roles');
 }
 
     // This function is responsible for deleting a user from the database.

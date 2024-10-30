@@ -14,7 +14,14 @@ class Invoice extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'client_id',
+        'subscription_id',
+        'due_date',
+        'total_amount',
+        'status',
+        
+    ];
 
     protected static function newFactory()
     {
