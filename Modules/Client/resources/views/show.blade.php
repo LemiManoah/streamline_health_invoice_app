@@ -50,9 +50,10 @@
         </div>
 
         {{-- Subscription information --}}
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200">Subscription Information</h3>
         @if ($client->subscriptions?->count())
         @foreach ($client->subscriptions as $subscription)
-            <div class="mt-4 p-4 border-b border-gray-300 dark:border-gray-600">
+            <div class="mt-2 p-4 border-b border-gray-300 dark:border-gray-600">
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Billing Cycle in years: <span
                         class="font-medium">{{ $subscription->billing_cycle_in_years }}</span></p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Plan: <span

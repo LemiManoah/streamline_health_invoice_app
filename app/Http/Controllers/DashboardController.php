@@ -16,8 +16,8 @@ class DashboardController extends Controller
         $totalClients = Client::count();
 
 
-        // Total Revenue (assuming you have a 'total_amount' column in invoices table)
-        $totalRevenue = Invoice::sum('total_amount');
+        // Total Revenue 
+        $totalRevenue = Subscription::sum('amount');
 
         // Recent Clients
         $recentClients = Client::latest()->take(5)->get();

@@ -4,7 +4,7 @@
 <p>Invoice Details:</p>
 <ul>
     <li>Invoice Number: {{ $invoice->id }}</li>
-    <li>Due Date: {{ $invoice->due_date->format('Y-m-d') }}</li>
+    <li>Due Date: {{ $invoice->due_date}}</li>
     <li>Amount: ${{ number_format($invoice->total_amount, 2) }}</li>
 </ul>
 <p>Please ensure payment is made as soon as possible to avoid any service interruptions.</p>
