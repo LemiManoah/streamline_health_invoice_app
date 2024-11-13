@@ -130,7 +130,7 @@ class InvoiceController extends Controller
     {
         $search = $request->input('search');
 
-        // Assuming you're searching invoices by client name or invoice number
+        //searching invoices by client name or invoice number
         $invoices = Invoice::where('status', 'like', "%{$search}%")
                     ->orWhereHas('client', function ($query) use ($search) {
                         $query->where('name', 'like', "%{$search}%");

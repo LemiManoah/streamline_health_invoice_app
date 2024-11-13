@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('invoices:send-reminders')->everyMinute();
-Schedule::command('invoices:generate')->everySecond();
+Schedule::command('invoices:generate')->everyMinute();

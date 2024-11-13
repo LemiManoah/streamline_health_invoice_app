@@ -54,7 +54,7 @@ class Client extends Model
     public function invoice(){
         return $this->hasMany(Invoice::class);
     }
-    public function subscription(){
+    public function subscriptions(){
         return $this->hasMany(Subscription::class);
     }
 }

@@ -51,7 +51,7 @@ class ClientController extends Controller
     public function show($id)
     {
         // Retrieve the client with the given ID and show its details
-        $client = Client::with('subscription')->findOrFail($id);
+        $client = Client::with('subscriptions')->findOrFail($id);
         return view('client::show', compact('client'));
     }
 

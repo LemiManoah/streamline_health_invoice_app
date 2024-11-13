@@ -21,7 +21,7 @@ class RemindersMail extends Mailable
 
     public function build()
     {
-        return $this->view('emails.reminders_mail')
+        return $this->view('invoice::emails.reminders_mail')
                     ->subject('Reminder: Invoice Payment Due');
     }
 }
