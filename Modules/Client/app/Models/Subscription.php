@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Client\Database\Factories\SubscriptionFactory;
+use Modules\Client\Database\Factories\SubscriptionsFactory;
 
 class Subscription extends Model
 {
@@ -28,7 +29,7 @@ class Subscription extends Model
 
     protected static function newFactory()
     {
-        //return SubscriptionFactory::new();
+        return SubscriptionsFactory::new();
     }
     // Get the client associated with the subscription
     public function client()

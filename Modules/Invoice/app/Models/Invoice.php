@@ -25,7 +25,7 @@ class Invoice extends Model
 
     protected static function newFactory()
     {
-        //return InvoiceFactory::new();
+        return InvoiceFactory::new();
     }
     public function client()
     {

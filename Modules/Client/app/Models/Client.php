@@ -2,11 +2,11 @@
 
 namespace Modules\Client\Models;
 
+use Modules\Invoice\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Modules\Client\Database\Factories\ClientFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Invoice\Models\Invoice;
 
 class Client extends Model
 {
@@ -44,12 +44,12 @@ class Client extends Model
 
     protected static function newFactory()
     {
-        //return ClientModelFactory::new();
+        return ClientFactory::new();
     }
     public function routeNotificationForMail($notification)
     {
         // Return the email address you want to use for sending notifications
-        return $this->client_email; // Replace with the appropriate attribute if needed
+        return $this->client_email; 
     }
     public function invoice(){
         return $this->hasMany(Invoice::class);
